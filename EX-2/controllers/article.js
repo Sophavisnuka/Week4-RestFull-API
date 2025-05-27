@@ -1,8 +1,16 @@
 import { articles } from '../models/data.js';
 
 export const getArticles = (req, res) => {
-    res.json(articles);
-}
+    const { journalistId, categoryId } = req.query;
+    let filtered = articles;
+    if (journalistId) {
+        filtered = filtered.filter(article => article.journalistId == journalistId);
+    }
+    if (categoryId) {
+        filtered = filtered.filter(article => article.categoryId == categoryId);
+    }
+    res.json(filtered);
+};
 
 export const getArticleId = (req, res) => {
     const articleId = parseInt(req.params.id);
@@ -32,7 +40,7 @@ export const createArticle = (req, res) => {
 export const updateArticle = (req, res) => {
     const articleId = parseInt(req.params.id);
     const { title, content, categoryId, journalistId } = req.body;
-    const article = article.find(article => article.id === articleId);
+    const article = articles.find(art => art.id === articleId);
     if (!article) {
         return res.status(404).json({message: 'Article not found'});
     }
